@@ -166,3 +166,64 @@ diagrams based on lab analysis covering starting setup,
 final architecture, bucket access findings, role assumption
 flow and how IAM and resource-based policies determined
 access decisions throughout the lab.
+## Architecture Diagrams
+
+### 1. Starting Architecture
+![Starting Architecture](screenshots/arch-01-starting.png)
+
+This is what the lab environment looked like before anything 
+was done. devuser was already set up as an IAM user and placed 
+inside DeveloperGroup. That group had DeveloperGroupPolicy 
+attached to it. Three S3 buckets and an EC2 service were 
+already in the environment. The goal was to test what devuser 
+could actually do with those resources.
+
+---
+
+### 2. Final Architecture
+![Final Architecture](screenshots/arch-02-final.png)
+
+By the end of the lab devuser could assume BucketsAccessRole 
+using AWS STS. That role assumption changed what was accessible 
+across all three S3 buckets. The architecture looks similar to 
+the start but the key difference is that devuser now has a path 
+to assume a role and reach resources that were previously 
+blocked.
+
+---
+
+### 3. Bucket Access Analysis -- What devuser Could and Could Not Do
+![Bucket Analysis](screenshots/arch-03-bucket-analysis.png)
+
+This diagram breaks down what happened in Tasks 3 and 4. 
+devuser could create a brand new S3 bucket because 
+DeveloperGroupPolicy allowed s3:CreateBucket. However accessing 
+objects inside bucket1 or bucket2 failed completely. The policy 
+had no s3:GetObject or s3:PutObject permissions so anything 
+inside an existing bucket was off limits.
+
+---
+
+### 4. Role Access Analysis -- Why bucket2 Worked
+![Role Analysis](screenshots/arch-04-role-analysis.png)
+
+After assuming BucketsAccessRole things changed. The role had 
+GrantBucket1Access attached which gave read access to bucket1 
+only. bucket2 had no role-based policy covering it at all. Yet 
+uploading to bucket2 worked anyway. This diagram captures that 
+moment -- bucket1 access made sense but bucket2 access raised 
+the question the lab was building toward.
+
+---
+
+### 5. Policy Decision Flow -- The Full Picture
+![Policy Flow](screenshots/arch-05-policy-diagram.png)
+
+This is the diagram that ties everything together. bucket1 was 
+accessible because of the role-based policy attached to 
+BucketsAccessRole through GrantBucket1Access. bucket2 was 
+accessible for a completely different reason -- its own 
+resource-based bucket policy named BucketsAccessRole as a 
+trusted principal and granted it s3:GetObject, s3:PutObject 
+and s3:ListBucket directly. Two different policy types, two 
+different paths to access, same end result.
