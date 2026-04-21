@@ -161,3 +161,8 @@ folder. Here is what each one shows:
 | `14-bucket3-policy.png` | bucket3 bucket policy |
 | `15-bucket3-upload-success.png` | Successful upload to bucket3 |
 | `16-lab-completion-score.png` | Final submission report and score |
+Added accurate descriptions for all five lab architecture
+diagrams based on lab analysis covering starting setup,
+final architecture, bucket access findings, role assumption
+flow and how IAM and resource-based policies determined
+access decisions throughout the lab.
