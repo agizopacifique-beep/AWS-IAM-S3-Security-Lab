@@ -1,4 +1,4 @@
-# AWS IAM and S3 Security Lab 3.1
+# AWS IAM and S3 Security Project
 
 ![AWS](https://img.shields.io/badge/AWS-IAM-orange)
 ![S3](https://img.shields.io/badge/Amazon-S3-blue)
